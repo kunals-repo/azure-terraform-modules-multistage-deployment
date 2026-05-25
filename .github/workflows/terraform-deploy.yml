@@ -6,8 +6,10 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "terraform-deploy.yml"
 
-      
+
 
 permissions:
   contents: read
