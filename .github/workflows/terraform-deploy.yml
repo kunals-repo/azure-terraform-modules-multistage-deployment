@@ -1,176 +1,193 @@
 
-# name: Azure Terraform Multi Environment Deployment
+name: Azure Terraform Multi Environment Deployment
 
-# on:
+on:
 
-#   push:
-#     branches:
-#       - main
-#     paths: main.tf
+  push:
+    branches:
+      - main
+    paths: terraform-deploy.yml
 
 
-# permissions:
-#   contents: read
+permissions:
+  contents: read
 
-# jobs:
+jobs:
 
-# # ================= BUILD / VALIDATE =================
+  terraform-validation:
 
-#   terraform-validation:
+    runs-on: ubuntu-latest
 
-#     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform/
 
-#     defaults:
-#       run:
-#         working-directory: terraform
+    steps:
 
-#     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-#       - name: Checkout code
-#         uses: actions/checkout@v4
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+           terraform_version: "1.14.5"
 
-#       - name: Install Terraform
-#         uses: hashicorp/setup-terraform@v3
-#         with:
-#            terraform_version: ""
+      - name: Terraform Init
+        run: terraform init
 
-#       - name: Terraform Init
-#         run: terraform init
+      - name: Terraform Validate
+        run: terraform validate
 
-#       - name: Terraform Format Check
-#         run: terraform fmt -check
 
-#       - name: Terraform Validate
-#         run: terraform validate
+  deploy-dev:
 
-# # ================= DEV =================
+    needs: terraform-validation
 
-#   deploy-dev:
+    runs-on: ubuntu-latest
 
-#     needs: terraform-validation
+    environment:
+      name: dev
 
-#     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform/
 
-#     environment:
-#       name: dev
+    steps:
 
-#     defaults:
-#       run:
-#         working-directory: terraform
+      - name: checkout code
+        uses: actions/checkout@v4
 
-#     steps:
+      - name: setup the terraform  
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.14.5"
 
-#       - uses: actions/checkout@v4
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: |
+            {
+              "clientId": "${{ secrets.AZURE_CLIENT_ID }}",
+              "clientSecret": "${{ secrets.AZURE_CLIENT_SECRET }}",
+              "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}",
+              "tenantId": "${{ secrets.AZURE_TENANT_ID }}"
+            }
 
-#       - uses: hashicorp/setup-terraform@v3
+      - name: Terraform Init
+        run: terraform init
 
-#       - name: Azure Login
-#         uses: azure/login@v2
-#         with:
-#           client-id: ${{ secrets.AZURE_CLIENT_ID }}
-#           client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-#           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-#           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Terraform Plan for dev
+        run: |
+          terraform plan \
+          -var-file=dev.tfvars \
+          -out=dev.tfplan
 
-#       - name: Terraform Init
-#         run: terraform init
+      - name: Terraform Apply for dev
+        run: |
+          terraform apply \
+          -auto-approve \
+          dev.tfplan
 
-#       - name: Terraform Plan DEV
-#         run: |
-#           terraform plan \
-#           -var-file=dev.tfvars \
-#           -out=dev.tfplan
 
-#       - name: Terraform Apply DEV
-#         run: |
-#           terraform apply \
-#           -auto-approve \
-#           dev.tfplan
 
-# # ================= TEST =================
+  deploy-test:
 
-#   deploy-test:
+    needs: deploy-dev
 
-#     needs: deploy-dev
+    runs-on: ubuntu-latest
 
-#     runs-on: ubuntu-latest
+    environment:
+      name: test
 
-#     environment:
-#       name: test
+    defaults:
+      run:
+        working-directory: terraform/
 
-#     defaults:
-#       run:
-#         working-directory: terraform
+    steps:
 
-#     steps:
+      - name: checkout code
+        uses: actions/checkout@v4
 
-#       - uses: actions/checkout@v4
 
-#       - uses: hashicorp/setup-terraform@v3
+      - name: setup the terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.14.5"
 
-#       - name: Azure Login
-#         uses: azure/login@v2
-#         with:
-#           client-id: ${{ secrets.AZURE_CLIENT_ID }}
-#           client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-#           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-#           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: |
+            {
+              "clientId": "${{ secrets.AZURE_CLIENT_ID }}",
+              "clientSecret": "${{ secrets.AZURE_CLIENT_SECRET }}",
+              "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}",
+              "tenantId": "${{ secrets.AZURE_TENANT_ID }}"
+            }
 
-#       - name: Terraform Init
-#         run: terraform init
+      - name: Terraform Init
+        run: terraform init
 
-#       - name: Terraform Plan TEST
-#         run: |
-#           terraform plan \
-#           -var-file=test.tfvars \
-#           -out=test.tfplan
+      - name: Terraform Plan for test
+        run: |
+          terraform plan \
+          -var-file=test.tfvars \
+          -out=test.tfplan
 
-#       - name: Terraform Apply TEST
-#         run: |
-#           terraform apply \
-#           -auto-approve \
-#           test.tfplan
+      - name: Terraform Apply for test
+        run: |
+          terraform apply \
+          -auto-approve \
+          test.tfplan
 
-# # ================= PROD =================
 
-#   deploy-prod:
 
-#     needs: deploy-test
+  deploy-prod:
 
-#     runs-on: ubuntu-latest
+    needs: deploy-test
 
-#     environment:
-#       name: prod
+    runs-on: ubuntu-latest
 
-#     defaults:
-#       run:
-#         working-directory: terraform
+    environment:
+      name: prod
 
-#     steps:
+    defaults:
+      run:
+        working-directory: terraform/
 
-#       - uses: actions/checkout@v4
+    steps:
 
-#       - uses: hashicorp/setup-terraform@v3
+      - name: checkout code
+        uses: actions/checkout@v4
 
-#       - name: Azure Login
-#         uses: azure/login@v2
-#         with:
-#           client-id: ${{ secrets.AZURE_CLIENT_ID }}
-#           client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-#           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-#           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-#       - name: Terraform Init
-#         run: terraform init
+      - name: setuo terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.14.5"
 
-#       - name: Terraform Plan PROD
-#         run: |
-#           terraform plan \
-#           -var-file=prod.tfvars \
-#           -out=prod.tfplan
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: |
+            {
+              "clientId": "${{ secrets.AZURE_CLIENT_ID }}",
+              "clientSecret": "${{ secrets.AZURE_CLIENT_SECRET }}",
+              "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}",
+              "tenantId": "${{ secrets.AZURE_TENANT_ID }}"
+            }
 
-#       - name: Terraform Apply PROD
-#         run: |
-#           terraform apply \
-#           -auto-approve \
-#           prod.tfplan
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan for prod
+        run: |
+          terraform plan \
+          -var-file=prod.tfvars \
+          -out=prod.tfplan
+
+      - name: Terraform Apply for prod
+        run: |
+          terraform apply \
+          -auto-approve \
+          prod.tfplan
