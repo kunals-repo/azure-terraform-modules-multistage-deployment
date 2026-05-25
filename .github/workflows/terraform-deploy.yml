@@ -1,0 +1,176 @@
+
+# name: Azure Terraform Multi Environment Deployment
+
+# on:
+
+#   push:
+#     branches:
+#       - main
+#     paths: main.tf
+
+
+# permissions:
+#   contents: read
+
+# jobs:
+
+# # ================= BUILD / VALIDATE =================
+
+#   terraform-validation:
+
+#     runs-on: ubuntu-latest
+
+#     defaults:
+#       run:
+#         working-directory: terraform
+
+#     steps:
+
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+
+#       - name: Install Terraform
+#         uses: hashicorp/setup-terraform@v3
+#         with:
+#            terraform_version: ""
+
+#       - name: Terraform Init
+#         run: terraform init
+
+#       - name: Terraform Format Check
+#         run: terraform fmt -check
+
+#       - name: Terraform Validate
+#         run: terraform validate
+
+# # ================= DEV =================
+
+#   deploy-dev:
+
+#     needs: terraform-validation
+
+#     runs-on: ubuntu-latest
+
+#     environment:
+#       name: dev
+
+#     defaults:
+#       run:
+#         working-directory: terraform
+
+#     steps:
+
+#       - uses: actions/checkout@v4
+
+#       - uses: hashicorp/setup-terraform@v3
+
+#       - name: Azure Login
+#         uses: azure/login@v2
+#         with:
+#           client-id: ${{ secrets.AZURE_CLIENT_ID }}
+#           client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+#           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+#           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+#       - name: Terraform Init
+#         run: terraform init
+
+#       - name: Terraform Plan DEV
+#         run: |
+#           terraform plan \
+#           -var-file=dev.tfvars \
+#           -out=dev.tfplan
+
+#       - name: Terraform Apply DEV
+#         run: |
+#           terraform apply \
+#           -auto-approve \
+#           dev.tfplan
+
+# # ================= TEST =================
+
+#   deploy-test:
+
+#     needs: deploy-dev
+
+#     runs-on: ubuntu-latest
+
+#     environment:
+#       name: test
+
+#     defaults:
+#       run:
+#         working-directory: terraform
+
+#     steps:
+
+#       - uses: actions/checkout@v4
+
+#       - uses: hashicorp/setup-terraform@v3
+
+#       - name: Azure Login
+#         uses: azure/login@v2
+#         with:
+#           client-id: ${{ secrets.AZURE_CLIENT_ID }}
+#           client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+#           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+#           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+#       - name: Terraform Init
+#         run: terraform init
+
+#       - name: Terraform Plan TEST
+#         run: |
+#           terraform plan \
+#           -var-file=test.tfvars \
+#           -out=test.tfplan
+
+#       - name: Terraform Apply TEST
+#         run: |
+#           terraform apply \
+#           -auto-approve \
+#           test.tfplan
+
+# # ================= PROD =================
+
+#   deploy-prod:
+
+#     needs: deploy-test
+
+#     runs-on: ubuntu-latest
+
+#     environment:
+#       name: prod
+
+#     defaults:
+#       run:
+#         working-directory: terraform
+
+#     steps:
+
+#       - uses: actions/checkout@v4
+
+#       - uses: hashicorp/setup-terraform@v3
+
+#       - name: Azure Login
+#         uses: azure/login@v2
+#         with:
+#           client-id: ${{ secrets.AZURE_CLIENT_ID }}
+#           client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+#           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+#           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+#       - name: Terraform Init
+#         run: terraform init
+
+#       - name: Terraform Plan PROD
+#         run: |
+#           terraform plan \
+#           -var-file=prod.tfvars \
+#           -out=prod.tfplan
+
+#       - name: Terraform Apply PROD
+#         run: |
+#           terraform apply \
+#           -auto-approve \
+#           prod.tfplan

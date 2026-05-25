@@ -1,2 +1,9 @@
+#this file is created for variables
 
-#this file is created for variables. 
+variable "name-env" {
+    type = string
+}
+variable "location" {
+    type = string
+  
+}
