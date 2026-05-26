@@ -1,3 +1,3 @@
 
-name-env = "devlopment"
-location = "eastus"
+acct-name = "Audistoragedev2605"
+replication-type = "LRS"
