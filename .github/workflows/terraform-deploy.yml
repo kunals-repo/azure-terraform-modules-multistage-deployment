@@ -34,15 +34,22 @@ jobs:
         with:
            terraform_version: "1.14.5"
 
+      - name: Terraform Init
+        run: terraform init
+ 
+
       - name: Terraform Init for dev
         run: terraform init -backend-config=backend/dev.state.tf
+
 
       - name: Terraform Init for test
         run: terraform init -backend-config=backend/test.state.tf
 
+
       - name: Terraform Init for prod
         run: terraform init -backend-config=backend/prod.state.tf
 
+        
       - name: Terraform Validate
         run: terraform validate
 
@@ -80,6 +87,9 @@ jobs:
               "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}",
               "tenantId": "${{ secrets.AZURE_TENANT_ID }}"
             }
+
+      - name: Terraform Init for dev
+        run: terraform init -backend-config=backend/dev.state.tf
 
       - name: Terraform Init
         run: terraform init
@@ -133,6 +143,11 @@ jobs:
               "tenantId": "${{ secrets.AZURE_TENANT_ID }}"
             }
 
+
+      - name: Terraform Init for test
+        run: terraform init -backend-config=backend/test.state.tf
+
+
       - name: Terraform Init
         run: terraform init
 
@@ -185,14 +200,22 @@ jobs:
               "tenantId": "${{ secrets.AZURE_TENANT_ID }}"
             }
 
+
+      - name: Terraform Init for prod
+        run: terraform init -backend-config=backend/prod.state.tf
+
+
       - name: Terraform Init
         run: terraform init
+
 
       - name: Terraform Plan for prod
         run: |
           terraform plan \
           -var-file=prod.tfvars \
           -out=prod.tfplan
+
+
 
       - name: Terraform Apply for prod
         run: |
