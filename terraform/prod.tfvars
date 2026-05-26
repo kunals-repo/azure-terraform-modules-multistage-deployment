@@ -1,3 +1,3 @@
 
-acct-name = "audistorageProd2605"
+acct-name = "audistorageprod2605"
 replication-type = "LRS"
