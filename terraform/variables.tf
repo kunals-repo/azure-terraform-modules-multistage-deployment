@@ -1,9 +1,9 @@
 #this file is created for variables
 
-variable "name-env" {
+variable "acct-name" {
     type = string
 }
-variable "location" {
+variable "replication-type" {
     type = string
   
 }
