@@ -18,42 +18,6 @@ provider "azurerm" {
   # Configuration options
 }
 
-# Defining the backend state file for dev , test , prod env :
-
-terraform {
-    backend "azurerm" {
-
-        resource_group_name = "backend-storage-acct"
-        storage_account_name = "terraformstatefile2605"
-        container_name = "tfstate"
-        key = "dev.tfstate"
-      
-    }
-}
-
-terraform {
-    backend "azurerm" {
-
-        resource_group_name = "backend-storage-acct"
-        storage_account_name = "terraformstatefile2605"
-        container_name = "tfstate"
-        key = "test.tfstate"
-      
-    }
-    
-}
-
-terraform {
-    backend "azurerm" {
-
-        resource_group_name = "backend-storage-acct"
-        storage_account_name = "terraformstatefile2605"
-        container_name = "tfstate"
-        key = "prod.tfstate"
-      
-    }
-    
-}
 
 resource "azurerm_resource_group" "rg-block" {
   name = "storage-rg"
