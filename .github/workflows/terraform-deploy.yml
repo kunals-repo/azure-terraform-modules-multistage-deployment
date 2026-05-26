@@ -6,8 +6,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "terraform/main.tf"
 
 
 
@@ -39,15 +37,15 @@ jobs:
  
 
       - name: Terraform Init for dev
-        run: terraform init -backend-config=backend/dev.tfbackend
+        run: terraform init -backend-config=backend/dev.tfbackend -reconfigure -input=false
 
 
       - name: Terraform Init for test
-        run: terraform init -backend-config=backend/test.tfbackend
+        run: terraform init -backend-config=backend/test.tfbackend -reconfigure -input=false
 
 
       - name: Terraform Init for prod
-        run: terraform init -backend-config=backend/prod.tfbackend
+        run: terraform init -backend-config=backend/prod.tfbackend -reconfigure -input=false
 
 
       - name: Terraform Validate
