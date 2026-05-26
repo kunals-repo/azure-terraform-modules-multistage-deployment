@@ -7,7 +7,7 @@ on:
     branches:
       - main
     paths:
-      - "terraform/prod.backend"
+      - "terraform/main.tf"
 
 
 
@@ -37,19 +37,8 @@ jobs:
 
 
 
-      - name: Terraform Init for dev
-        working-directory: terraform/
-        run: terraform init -backend-config=dev.backend -reconfigure -input=false
-
-
-      - name: Terraform Init for test
-        working-directory: terraform/
-        run: terraform init -backend-config=test.backend -reconfigure -input=false
-
-
-      - name: Terraform Init for prod
-        working-directory: terraform/
-        run: terraform init -backend-config=prod.backend -reconfigure -input=false
+      - name: Terraform Init
+        run: terraform init 
 
 
       - name: Terraform Validate
