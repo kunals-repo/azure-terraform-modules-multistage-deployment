@@ -20,7 +20,7 @@ provider "azurerm" {
 
 
 resource "azurerm_resource_group" "rg-block" {
-  name = "storage-accts"
+  name = "storage-rg-${var.acct-name}"
   location = "southindia" 
 }
 resource "azurerm_storage_account" "storage-rg" {
