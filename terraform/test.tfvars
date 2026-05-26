@@ -1,3 +1,3 @@
 
-name-env = "testing"
-location = "eastus"
+acct-name = "Audistoragetest2605"
+replication-type = "LRS"
