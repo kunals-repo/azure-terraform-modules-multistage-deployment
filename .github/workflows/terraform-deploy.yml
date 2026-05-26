@@ -7,7 +7,7 @@ on:
     branches:
       - main
     paths:
-      - "terraform/prod.tfvars"
+      - "terraform/main.tf"
 
 
 
@@ -49,7 +49,7 @@ jobs:
       - name: Terraform Init for prod
         run: terraform init -backend-config=backend/prod.state.tf
 
-        
+
       - name: Terraform Validate
         run: terraform validate
 
