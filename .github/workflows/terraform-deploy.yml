@@ -35,14 +35,17 @@ jobs:
 
 
       - name: Terraform Init for dev
+        working-directory: terraform/
         run: terraform init -backend-config=backend/dev.tfbackend -reconfigure -input=false
 
 
       - name: Terraform Init for test
+        working-directory: terraform/
         run: terraform init -backend-config=backend/test.tfbackend -reconfigure -input=false
 
 
       - name: Terraform Init for prod
+        working-directory: terraform/
         run: terraform init -backend-config=backend/prod.tfbackend -reconfigure -input=false
 
 
