@@ -8,12 +8,11 @@ terraform {
     } 
   }
   
-  required_version = ">=1.14.5"
-
-#backend block is added
   backend "azurerm" {}
 
+  required_version = ">=1.14.5"
 }
+
 
 provider "azurerm" {
    features {
