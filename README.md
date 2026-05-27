@@ -23,34 +23,6 @@ The deployment pipeline supports:
 ✅ Secure deployment using Azure Service Principal authentication
 
 
-🏗️ Architecture Overview
-
-Developer Push
-
-        │
-        ▼
-        
-GitHub Repository
-
-        │
-        ▼
-        
-GitHub Actions Workflow
-
-        │
-        ▼
-        
-Self-Hosted Runner
-        │
-        ├────────► Dev Deployment
-        │
-        ├────────► Test Deployment
-        │
-        └────────► Prod Deployment
-                        │
-                        ▼
-                Azure Infrastructure
-
 
 📈 Key Highlights :
 
