@@ -5,6 +5,7 @@
 This project shows how to deploy Azure infrastructure using Terraform Modules and GitHub Actions with an Infrastructure as Code (IaC) approach across multiple environments such as Development, Testing, and Production.The workflow uses a Self-Hosted GitHub Runner to run Terraform commands and deploy Azure resources in different environment stages.
 
 
+```text
 The deployment pipeline supports:
 
 ✅ Development Environment (Dev)
@@ -20,10 +21,10 @@ The deployment pipeline supports:
 ✅ Self-hosted runner execution model
 
 ✅ Secure deployment using Azure Service Principal authentication
+```
 
 
-
-
+```text
 📈 Key Highlights :
 
 🚀 Multi-stage GitHub Actions workflow
@@ -41,7 +42,7 @@ The deployment pipeline supports:
 🌍 Azure cloud deployment automation
 
 ⚡ CI/CD implementation using GitHub Actions
-
+```
 
 
 
