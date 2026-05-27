@@ -2,9 +2,8 @@
 
 📌 Project Summary
 
-This project shows how to deploy Azure infrastructure using Terraform Modules and GitHub Actions with an Infrastructure as Code (IaC) approach across multiple environments such as Development, Testing, and Production.
+This project shows how to deploy Azure infrastructure using Terraform Modules and GitHub Actions with an Infrastructure as Code (IaC) approach across multiple environments such as Development, Testing, and Production.The workflow uses a Self-Hosted GitHub Runner to run Terraform commands and deploy Azure resources in different environment stages.
 
-The workflow uses a Self-Hosted GitHub Runner to run Terraform commands and deploy Azure resources in different environment stages.
 
 The deployment pipeline supports:
 
@@ -21,6 +20,7 @@ The deployment pipeline supports:
 ✅ Self-hosted runner execution model
 
 ✅ Secure deployment using Azure Service Principal authentication
+
 
 
 
@@ -43,6 +43,11 @@ The deployment pipeline supports:
 ⚡ CI/CD implementation using GitHub Actions
 
 
+
+
+## 📂 Project Structure
+
+```text
 terraform-multi-stage/
 │
 ├── .github/
@@ -52,10 +57,14 @@ terraform-multi-stage/
 ├── terraform/
 │   ├── main.tf
 │   ├── variables.tf
-│   ├── output.tf
-│   ├── provider.tf
+│   ├── dev.tfvars
+│   ├── test.tfvars
+│   ├── prod.tfvars
 │   │
-│   └── modules/
-│       └── vnet-modules/
+│   └── vnet-modules/
+│       └── output.tf
+│       └── variables.tf
+│       └── vnet-main.tf
 │
 └── README.md
+```
