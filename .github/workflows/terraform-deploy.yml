@@ -6,8 +6,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "terraform/main.tf"
 
 
 
@@ -19,7 +17,7 @@ jobs:
 
   terraform-validation:
 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     defaults:
       run:
@@ -49,7 +47,7 @@ jobs:
 
     needs: terraform-validation
 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     environment:
       name: dev
@@ -101,7 +99,7 @@ jobs:
 
     needs: deploy-dev
 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     environment:
       name: test
@@ -155,7 +153,7 @@ jobs:
 
     needs: deploy-test
 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     environment:
       name: prod
